@@ -1,0 +1,20 @@
+{
+  "name": "intership-backend",
+  "version": "1.0.0",
+  "description": "This project is the base for my intership selection process.",
+  "main": "index.js",
+  "scripts": {
+    "run": "node index.js",
+    "test": "nodemon index.js"
+  },
+  "author": "Bharadwaj Rachakonda <rbharadwaj022@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "express-session": "^1.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.18.0"
+  }
+}
