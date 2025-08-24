@@ -4,17 +4,17 @@
 // /items/:id -> get
 // /cart -> get, delete
 // /cart/:id -> delete, post
-
+const { connectDB } = require("./db/connect");
+connectDB();
+require("dotenv").config();
 const express = require("express");
 const app = express();
-const { connectDB } = require("./db/connect");
 const session = require("express-session");
 const JWT = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const PORT = process.env.PORT || 3000;
 const { Item, User, Cart } = require("./db/collections");
-connectDB();
-require("dotenv").config();
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
@@ -97,6 +97,7 @@ app.delete("/user/:username", async (req, res) => {
 app.get("/items", async (req, res) => {
   try {
     const items = await Item.find();
+    console.log(items);
     res.json(items);
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
