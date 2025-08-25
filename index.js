@@ -2,8 +2,7 @@
 // /user:username -> get, post, delete
 // /items -> get
 // /items/:id -> get
-// /cart -> get, delete
-// /cart/:id -> delete, post
+// /cart -> get, delete, put
 const { connectDB } = require("./db/connect");
 connectDB();
 require("dotenv").config();
@@ -150,7 +149,7 @@ app.delete("/cart", async (req, res) => {
 });
 
 // decrement cart item count by one if the count goes below one delete the item.
-app.delete("/cart/:id", async (req, res) => {
+app.put("/cart", async (req, res) => {
   try {
     const user = await User.findById(req.user_id);
     if (!user) {
@@ -160,54 +159,9 @@ app.delete("/cart/:id", async (req, res) => {
     if (!cart) {
       return res.status(404).json({ error: "Cart not found" });
     }
-    for (const item of cart.items) {
-      if (item._id.toString() === req.params.id) {
-        item.count--;
-        if (item.count < 1) {
-          cart.items.pull(item);
-        }
-        break;
-      }
-    }
+    cart.items = req.body.items;
     await cart.save();
-    const updatedCart = await Cart.findOne({ user: user._id }).populate(
-      "items.item"
-    );
-    res.status(204).json(updatedCart);
-  } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
-    console.error(error);
-  }
-});
-
-// increment cart item count by one
-app.post("/cart/:id", async (req, res) => {
-  try {
-    const user = await User.findById(req.user_id);
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-    let cart = await Cart.findOne({ user: user._id });
-    if (!cart) {
-      cart = new Cart({ user: user._id, items: [] });
-    }
-    const item = await Item.findById(req.params.id);
-    if (!item) {
-      return res.status(404).json({ error: "Item not found" });
-    }
-    let found = false;
-    for (const cartItem of cart.items) {
-      if (cartItem.item.toString() === item._id.toString()) {
-        cartItem.count++;
-        found = true;
-        break;
-      }
-    }
-    if (!found) {
-      cart.items.push({ item: item._id, count: 1 });
-    }
-    await cart.save();
-    res.status(201).json();
+    res.status(204).json(cart);
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
     console.error(error);
