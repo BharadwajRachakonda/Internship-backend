@@ -12,11 +12,13 @@ const app = express();
 const session = require("express-session");
 const JWT = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+var cors = require("cors");
 const PORT = process.env.PORT || 3000;
 const { Item, User, Cart } = require("./db/collections");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "default_secret",
