@@ -135,7 +135,7 @@ app.get("/cart", async (req, res) => {
     if (!cart) {
       return res.status(200).json({});
     }
-    res.json(cart);
+    res.json(cart.items);
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }
@@ -163,9 +163,9 @@ app.put("/cart", async (req, res) => {
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
-    const cart = await Cart.findOne({ user: user._id });
+    let cart = await Cart.findOne({ user: user._id });
     if (!cart) {
-      return res.status(404).json({ error: "Cart not found" });
+      cart = new Cart({ user: user._id, items: [] });
     }
     cart.items = req.body.items;
     await cart.save();
