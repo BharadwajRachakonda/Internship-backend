@@ -12,7 +12,7 @@ const session = require("express-session");
 const JWT = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 var cors = require("cors");
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4000;
 const { Item, User, Cart } = require("./db/collections");
 
 app.use(express.json());
@@ -39,8 +39,13 @@ app.use("/cart", (req, res, next) => {
 app.put("/user/:username", async (req, res) => {
   try {
     if (req.session.JWT) {
-      const user = JWT.verify(req.session.JWT, process.env.JWT_SECRET);
-      res.json(user);
+      const decoded = JWT.verify(req.session.JWT, process.env.JWT_SECRET);
+      const user = await User.findById(decoded.id).select("name");
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      return res.json({ name: user.name });
     } else {
       const username = req.params.username;
       const user = await User.findOne({ name: username });
