@@ -17,13 +17,24 @@ const { Item, User, Cart } = require("./db/collections");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+app.use(
+  cors({
+    origin: "*",
+    credentials: true,
+  })
+);
+
+// ✅ Session config
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "default_secret",
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false },
+    cookie: {
+      httpOnly: false,
+      secure: true,
+      sameSite: "none",
+    },
   })
 );
 app.use("/cart", (req, res, next) => {
