@@ -17,8 +17,7 @@ const cart = new Schema({
   user: { type: Schema.Types.ObjectId, ref: "user", require: true },
   items: [
     {
-      type: Schema.Types.ObjectId,
-      ref: "item",
+      _id: { type: Schema.Types.ObjectId, ref: "item" },
       count: { type: Number, required: true },
     },
   ],

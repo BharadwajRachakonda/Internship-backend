@@ -126,7 +126,10 @@ app.get("/cart", async (req, res) => {
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
-    const cart = await Cart.findOne({ user: user._id }).populate("items.item");
+    const cart = await Cart.findOne({ user: user._id }).populate("items._id");
+    if (!cart) {
+      return res.status(200).json({});
+    }
     res.json(cart);
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
