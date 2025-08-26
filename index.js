@@ -36,7 +36,7 @@ app.use("/cart", (req, res, next) => {
 });
 
 // get user details given username in url and password in body
-app.get("/user/:username", async (req, res) => {
+app.put("/user/:username", async (req, res) => {
   try {
     if (req.session.JWT) {
       const user = JWT.verify(req.session.JWT, process.env.JWT_SECRET);
