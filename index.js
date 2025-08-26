@@ -3,9 +3,10 @@
 // /items -> get
 // /items/:id -> get
 // /cart -> get, delete, put
+
+require("dotenv").config();
 const { connectDB } = require("./db/connect");
 connectDB();
-require("dotenv").config();
 const express = require("express");
 const app = express();
 const session = require("express-session");
@@ -31,12 +32,13 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      httpOnly: false,
-      secure: true,
-      sameSite: "none",
+      httpOnly: true, // ✅ safer, not accessible by JS
+      secure: false, // ✅ allow cookies over HTTP for localhost
+      sameSite: "lax", // ✅ works fine for same-origin dev
     },
   })
 );
+
 app.use("/cart", (req, res, next) => {
   if (req.session.JWT && JWT.verify(req.session.JWT, process.env.JWT_SECRET)) {
     req.user_id = JWT.decode(req.session.JWT, process.env.JWT_SECRET).id;
@@ -180,7 +182,7 @@ app.put("/cart", async (req, res) => {
     }
     cart.items = req.body.items;
     await cart.save();
-    res.status(204).json(cart);
+    res.status(200).json(cart); // ✅ use 200 instead of 204
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
     console.error(error);
