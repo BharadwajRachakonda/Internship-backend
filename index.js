@@ -39,6 +39,8 @@ app.use(
   })
 );
 
+app.set("trust proxy", 1);
+
 app.use("/cart", (req, res, next) => {
   if (req.session.JWT && JWT.verify(req.session.JWT, process.env.JWT_SECRET)) {
     req.user_id = JWT.decode(req.session.JWT, process.env.JWT_SECRET).id;
