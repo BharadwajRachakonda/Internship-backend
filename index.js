@@ -147,7 +147,7 @@ app.get("/cart", async (req, res) => {
     }
     const cart = await Cart.findOne({ user: user._id }).populate("items._id");
     if (!cart) {
-      return res.status(200).json({ items: [] });
+      return res.status(200).json([]);
     }
     res.json(cart.items);
   } catch (error) {
@@ -163,7 +163,7 @@ app.delete("/cart", async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
     await Cart.deleteOne({ user: user._id });
-    res.status(204).json({ items: [] });
+    res.status(204).json([]);
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
     console.error(error);
