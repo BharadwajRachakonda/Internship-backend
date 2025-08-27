@@ -149,6 +149,9 @@ app.get("/cart", async (req, res) => {
     if (!cart) {
       return res.status(200).json([]);
     }
+    if (!cart.items) {
+      return res.status(200).json([]);
+    }
     res.json(cart.items);
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
