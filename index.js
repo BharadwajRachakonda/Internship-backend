@@ -194,7 +194,11 @@ app.put("/cart", async (req, res) => {
 });
 
 app.get("/hasSession", (req, res) => {
-  if (req.session && req.session.JWT) {
+  if (
+    req.session &&
+    req.session.JWT &&
+    JWT.verify(req.session.JWT, process.env.JWT_SECRET)
+  ) {
     return res.status(200).json({ hasSession: true });
   }
   res.status(200).json({ hasSession: false });
