@@ -32,9 +32,9 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      httpOnly: true, // ✅ safer, not accessible by JS
-      secure: false, // ✅ allow cookies over HTTP for localhost
-      sameSite: "lax", // ✅ works fine for same-origin dev
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // ✅ required for HTTPS
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // ✅ allow cross-site cookies
     },
   })
 );
