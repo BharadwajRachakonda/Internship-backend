@@ -20,7 +20,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: ["http://localhost:3000", "https://pizza-six-alpha.vercel.app"],
     credentials: true,
   })
 );
@@ -116,7 +116,6 @@ app.delete("/user/:username", async (req, res) => {
 app.get("/items", async (req, res) => {
   try {
     const items = await Item.find();
-    console.log(items);
     res.json(items);
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
@@ -146,7 +145,7 @@ app.get("/cart", async (req, res) => {
     }
     const cart = await Cart.findOne({ user: user._id }).populate("items._id");
     if (!cart) {
-      return res.status(200).json({});
+      return res.status(200).json([]);
     }
     res.json(cart.items);
   } catch (error) {
@@ -162,7 +161,7 @@ app.delete("/cart", async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
     await Cart.deleteOne({ user: user._id });
-    res.status(204).json({});
+    res.status(204).json([]);
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
     console.error(error);
@@ -182,11 +181,18 @@ app.put("/cart", async (req, res) => {
     }
     cart.items = req.body.items;
     await cart.save();
-    res.status(200).json(cart); // ✅ use 200 instead of 204
+    res.status(200).json(cart.items); // ✅ use 200 instead of 204
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
     console.error(error);
   }
+});
+
+app.get("/hasSession", (req, res) => {
+  if (req.session && req.session.JWT) {
+    return res.status(200).json({ hasSession: true });
+  }
+  res.status(200).json({ hasSession: false });
 });
 
 app.listen(PORT, () => {
