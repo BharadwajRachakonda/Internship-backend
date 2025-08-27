@@ -166,7 +166,7 @@ app.delete("/cart", async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
     await Cart.deleteOne({ user: user._id });
-    res.status(204).json([]);
+    res.status(200).json([]);
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
     console.error(error);
